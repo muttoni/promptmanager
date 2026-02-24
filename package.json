@@ -1,6 +1,6 @@
 {
   "name": "@rekshaw/promptmanager",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Regression-safe prompt + tool-calling evaluator",
   "type": "module",
   "main": "dist/index.js",

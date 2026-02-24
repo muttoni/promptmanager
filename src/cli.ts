@@ -5,6 +5,7 @@ import { runSuite } from "./runSuite.js";
 import { diffRuns } from "./diffRuns.js";
 import { generateSuggestions } from "./suggestions.js";
 import { runInit } from "./cli/init.js";
+import { runAddSuite } from "./cli/addSuite.js";
 import { loadConfig } from "./config.js";
 import {
   defaultRunReportPath,
@@ -45,7 +46,7 @@ async function main(): Promise<void> {
   program
     .name("promptmgr")
     .description("PromptManager: regression-safe prompt + tool-calling evaluation")
-    .version("0.1.0");
+    .version("0.1.1");
 
   program
     .command("init")
@@ -54,6 +55,23 @@ async function main(): Promise<void> {
     .action(async (options: { force?: boolean }) => {
       await runInit(process.cwd(), options);
     });
+
+  program
+    .command("add-suite")
+    .description("Scaffold a new suite and append it to promptmanager config")
+    .argument("<suiteId>", "Suite ID (e.g. refund-email-parser)")
+    .option("--prompt-id <promptId>", "Prompt ID (default: suiteId)")
+    .option("--from-suite <suiteId>", "Template suite to copy schema/assertions/tools/model defaults from")
+    .option("--config <path>", "Config path (default: promptmanager.config.ts/json)")
+    .option("--force", "Overwrite scaffold files if they already exist")
+    .action(
+      async (
+        suiteId: string,
+        options: { promptId?: string; fromSuite?: string; config?: string; force?: boolean },
+      ) => {
+        await runAddSuite(process.cwd(), suiteId, options);
+      },
+    );
 
   program
     .command("run")

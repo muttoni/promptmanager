@@ -40,7 +40,32 @@ promptmgr run --suite customer-email-parser --provider openai
 promptmgr diff --baseline ./baseline.json --candidate ./candidate.json
 promptmgr ci --suite customer-email-parser --provider openai --baseline ./baseline/run-report.json --fail-on-regression
 promptmgr suggest --run ./candidate.json --with-ai
+promptmgr add-suite refund-email-parser
 ```
+
+## Add many prompts fast
+
+When teams already have many prompts, use `add-suite` to scaffold each new suite without hand-editing folders/files:
+
+```bash
+promptmgr add-suite refund-email-parser
+promptmgr add-suite booking-change-parser --from-suite customer-email-parser
+promptmgr add-suite loyalty-upgrade-parser --prompt-id loyalty-upgrade
+```
+
+What it does:
+
+- Appends a new suite entry into `promptmanager.config.ts` or `.json`
+- Creates `prompts/<promptId>/meta.json` and `prompts/<promptId>/v1.0.0.md`
+- Creates `evals/<suiteId>/dataset.jsonl`, `schema.json`, and `assertions.json`
+- Reuses `toolsModule` and model defaults from an existing suite template
+
+Useful options:
+
+- `--from-suite <suiteId>`: choose which existing suite to copy defaults from
+- `--prompt-id <promptId>`: set a different prompt ID from suite ID
+- `--config <path>`: target a non-default config file
+- `--force`: overwrite scaffold files if they already exist
 
 ## Config contract
 

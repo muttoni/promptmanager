@@ -6,6 +6,9 @@ import { diffRuns } from "./diffRuns.js";
 import { generateSuggestions } from "./suggestions.js";
 import { runInit } from "./cli/init.js";
 import { runAddSuite } from "./cli/addSuite.js";
+import { runAddCase } from "./cli/addCase.js";
+import { runPromptBump } from "./cli/promptBump.js";
+import { runDoctor } from "./cli/doctor.js";
 import { loadConfig } from "./config.js";
 import {
   defaultRunReportPath,
@@ -72,6 +75,68 @@ async function main(): Promise<void> {
         await runAddSuite(process.cwd(), suiteId, options);
       },
     );
+
+  program
+    .command("add-case")
+    .description("Append one eval case to a suite dataset")
+    .argument("<suiteId>", "Suite ID")
+    .option("--case-id <id>", "Case ID (default: generated timestamp id)")
+    .option("--input <json>", "Input JSON payload")
+    .option("--input-file <path>", "Path to JSON input payload")
+    .option("--expected <json>", "Expected JSON payload")
+    .option("--expected-file <path>", "Path to JSON expected payload")
+    .option("--tags <csv>", "Comma-separated tags, e.g. smoke,refund")
+    .option("--dataset <path>", "Override dataset path")
+    .option("--config <path>", "Config path")
+    .action(
+      async (
+        suiteId: string,
+        options: {
+          caseId?: string;
+          input?: string;
+          inputFile?: string;
+          expected?: string;
+          expectedFile?: string;
+          tags?: string;
+          dataset?: string;
+          config?: string;
+        },
+      ) => {
+        await runAddCase(process.cwd(), suiteId, options);
+      },
+    );
+
+  const prompt = program.command("prompt").description("Prompt file workflows");
+  prompt
+    .command("bump")
+    .description("Create a new versioned prompt file for a suite")
+    .argument("<suiteId>", "Suite ID")
+    .option("--part <part>", "Version increment: patch|minor|major", "patch")
+    .option("--config <path>", "Config path")
+    .option("--force", "Overwrite target version file if it already exists")
+    .action(
+      async (
+        suiteId: string,
+        options: { part?: "patch" | "minor" | "major"; config?: string; force?: boolean },
+      ) => {
+        if (options.part && ![ "patch", "minor", "major" ].includes(options.part)) {
+          throw new Error(`Invalid --part '${options.part}'. Expected patch|minor|major.`);
+        }
+        await runPromptBump(process.cwd(), suiteId, options);
+      },
+    );
+
+  program
+    .command("doctor")
+    .description("Validate promptmanager setup and suite files")
+    .option("--config <path>", "Config path")
+    .option("--suite <suiteId>", "Validate only one suite")
+    .action(async (options: { config?: string; suite?: string }) => {
+      const result = await runDoctor(process.cwd(), options);
+      if (!result.ok) {
+        process.exitCode = 1;
+      }
+    });
 
   program
     .command("run")

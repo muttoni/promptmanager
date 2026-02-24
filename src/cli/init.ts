@@ -77,10 +77,6 @@ export default config;
 `,
     },
     {
-      filePath: path.resolve(cwd, "prompts/customer-email-parser/meta.json"),
-      content: `${JSON.stringify({ currentVersion: "1.0.0", versions: ["1.0.0"] }, null, 2)}\n`,
-    },
-    {
       filePath: path.resolve(cwd, "prompts/customer-email-parser/v1.0.0.md"),
       content: `You extract structured booking data from customer confirmation emails.
 

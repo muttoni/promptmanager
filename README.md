@@ -41,6 +41,9 @@ promptmgr diff --baseline ./baseline.json --candidate ./candidate.json
 promptmgr ci --suite customer-email-parser --provider openai --baseline ./baseline/run-report.json --fail-on-regression
 promptmgr suggest --run ./candidate.json --with-ai
 promptmgr add-suite refund-email-parser
+promptmgr add-case refund-email-parser --input '{"email":"raw"}' --expected '{"field":"value"}'
+promptmgr prompt bump refund-email-parser
+promptmgr doctor
 ```
 
 ## Add many prompts fast
@@ -56,7 +59,7 @@ promptmgr add-suite loyalty-upgrade-parser --prompt-id loyalty-upgrade
 What it does:
 
 - Appends a new suite entry into `promptmanager.config.ts` or `.json`
-- Creates `prompts/<promptId>/meta.json` and `prompts/<promptId>/v1.0.0.md`
+- Creates `prompts/<promptId>/v1.0.0.md`
 - Creates `evals/<suiteId>/dataset.jsonl`, `schema.json`, and `assertions.json`
 - Reuses `toolsModule` and model defaults from an existing suite template
 
@@ -66,6 +69,46 @@ Useful options:
 - `--prompt-id <promptId>`: set a different prompt ID from suite ID
 - `--config <path>`: target a non-default config file
 - `--force`: overwrite scaffold files if they already exist
+
+## Easier versioning
+
+`meta.json` is optional. PromptManager auto-picks the latest `v*.md` file.
+
+To make a new prompt version:
+
+```bash
+promptmgr prompt bump customer-email-parser
+promptmgr prompt bump customer-email-parser --part minor
+```
+
+This creates the next file (for example `v1.0.1.md`) by copying the latest prompt body.
+
+## Add eval cases quickly
+
+Append one case without manually editing JSONL:
+
+```bash
+promptmgr add-case customer-email-parser \
+  --case-id customer-email-002 \
+  --input '{"subject":"...","body":"..."}' \
+  --expected '{"customer_email":"x@y.com","reservation_code":"ABC123","departure_date":"2026-04-18","fare_type_raw":"Economy Flex","fare_type_normalized":"ECONOMY_FLEX"}' \
+  --tags smoke,happy-path
+```
+
+Or load input/expected from files:
+
+```bash
+promptmgr add-case customer-email-parser --input-file ./tmp/input.json --expected-file ./tmp/expected.json
+```
+
+## Setup health checks
+
+Validate config + suite files before running evals:
+
+```bash
+promptmgr doctor
+promptmgr doctor --suite customer-email-parser
+```
 
 ## Config contract
 

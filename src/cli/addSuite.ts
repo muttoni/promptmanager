@@ -291,7 +291,6 @@ export async function runAddSuite(cwd: string, suiteId: string, options: AddSuit
   const targetDatasetPath = path.resolve(configDir, newSuite.datasetPath);
 
   const promptDir = path.resolve(resolvedCwd, "prompts", promptId);
-  const promptMetaPath = path.join(promptDir, "meta.json");
   const promptVersionPath = path.join(promptDir, "v1.0.0.md");
 
   let created = 0;
@@ -301,11 +300,6 @@ export async function runAddSuite(cwd: string, suiteId: string, options: AddSuit
     await copyOrWriteFileSafe(targetSchemaPath, sourceSchemaPath, DEFAULT_SCHEMA, force),
     await copyOrWriteFileSafe(targetAssertionsPath, sourceAssertionsPath, DEFAULT_ASSERTIONS, force),
     await copyOrWriteFileSafe(targetDatasetPath, sourceDatasetPath, DEFAULT_DATASET, force),
-    await writeFileSafe(
-      promptMetaPath,
-      `${JSON.stringify({ currentVersion: "1.0.0", versions: ["1.0.0"] }, null, 2)}\n`,
-      force,
-    ),
     await writeFileSafe(promptVersionPath, defaultPromptContent(suiteId), force),
   ];
 

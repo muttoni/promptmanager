@@ -14,7 +14,7 @@ PromptManager is a Node/TypeScript CLI + SDK for regression-safe prompt developm
 ## Install
 
 ```bash
-npm install promptmanager
+npm install @rekshaw/promptmanager
 ```
 
 ## Initialize
@@ -55,7 +55,7 @@ promptmgr suggest --run ./candidate.json --with-ai
 ## Tool module contract
 
 ```ts
-import type { ToolModuleShape } from "promptmanager";
+import type { ToolModuleShape } from "@rekshaw/promptmanager";
 
 export const tools: ToolModuleShape["tools"] = [
   {
@@ -105,7 +105,7 @@ Each run emits a JSON artifact with:
 ## SDK usage
 
 ```ts
-import { runSuite, diffRuns, generateSuggestions } from "promptmanager";
+import { runSuite, diffRuns, generateSuggestions } from "@rekshaw/promptmanager";
 ```
 
 ## Development

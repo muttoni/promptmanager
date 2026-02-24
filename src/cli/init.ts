@@ -28,7 +28,7 @@ function filesForCwd(cwd: string): ScaffoldFile[] {
   return [
     {
       filePath: path.resolve(cwd, "promptmanager.config.ts"),
-      content: `import type { PromptManagerConfig } from "promptmanager";
+      content: `import type { PromptManagerConfig } from "@rekshaw/promptmanager";
 
 const config: PromptManagerConfig = {
   providers: {
